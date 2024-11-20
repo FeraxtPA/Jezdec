@@ -15,6 +15,7 @@ public:
     void Draw();
     void MarkPosition(int x, int y, int moveCount);
     void ResetPosition(int x, int y);
+   
 };
 
 

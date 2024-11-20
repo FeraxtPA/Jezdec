@@ -25,3 +25,4 @@ void Board::MarkPosition(int x, int y, int moveCount) {
 void Board::ResetPosition(int x, int y) {
     m_Board[x][y] = -1;
 }
+

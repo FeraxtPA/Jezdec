@@ -14,7 +14,7 @@ public:
     Knight(int startX, int startY);
 
     void move(int newX, int newY);
-    bool knightTourStep(Board& board);
+    bool knightTourStep(Board& board, std::stack<std::pair<int, int>>& moveStack);
     void backtrack(Board& board, std::stack<std::pair<int, int>>& moveStack);
     int WarnsdorffCount(int x, int y, Board& board);
 };

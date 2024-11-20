@@ -1,12 +1,11 @@
 #include "Knight.h"
 #include "Board.h"
+#include <iostream>
 
 Knight::Knight(int startX, int startY)
-    :x(startX),
-     y(startY),
-     moveCount(0)
-{
-}
+    : x(startX),
+    y(startY),
+    moveCount(0) {}
 
 void Knight::move(int newX, int newY) {
     x = newX;
@@ -25,11 +24,10 @@ int Knight::WarnsdorffCount(int x, int y, Board& board) {
     return count;
 }
 
-bool Knight::knightTourStep(Board& board) {
+bool Knight::knightTourStep(Board& board, std::stack<std::pair<int, int>>& moveStack) {
     int minOnwardMoves = std::numeric_limits<int>::max();
-    int bestMove = std::numeric_limits<int>::min();
-    int nx = std::numeric_limits<int>::min();
-    int ny = std::numeric_limits<int>::min();
+    int bestMove = -1;
+    int nx = -1, ny = -1;
 
     for (int i = 0; i < 8; i++) {
         int tx = x + dx[i], ty = y + dy[i];
@@ -47,6 +45,7 @@ bool Knight::knightTourStep(Board& board) {
     if (bestMove != -1) {
         move(nx, ny);
         board.MarkPosition(nx, ny, moveCount);
+        moveStack.push({ nx,ny });
         return true;
     }
 
@@ -54,16 +53,35 @@ bool Knight::knightTourStep(Board& board) {
 }
 
 void Knight::backtrack(Board& board, std::stack<std::pair<int, int>>& moveStack) {
-    while (!moveStack.empty()) {
-        auto lastMove = moveStack.top();
-        moveStack.pop();
-        x = lastMove.first;
-        y = lastMove.second;
-        board.ResetPosition(x, y);
-        moveCount--;
+    if (moveStack.empty()) {
+        std::cout << "Backtrack stack is empty." << std::endl;
+        return;
+    }
 
-        if (knightTourStep(board)) {
-            return;
-        }
+  
+    auto lastMove = moveStack.top();
+    moveStack.pop();
+
+   
+    board.ResetPosition(x, y);
+
+    board.MarkPosition(x, y, moveCount);
+   
+    x = lastMove.first;
+    y = lastMove.second;
+
+    moveCount--;
+
+    board.MarkPosition(x, y, moveCount);
+   
+
+    std::cout << "Backtracking to: (" << x << ", " << y << "), moveCount: " << moveCount << std::endl;
+
+   
+    if (!knightTourStep(board, moveStack)) {
+        std::cout << "No further moves possible after backtracking." << std::endl;
     }
 }
+
+
+

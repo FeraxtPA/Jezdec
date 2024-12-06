@@ -14,8 +14,11 @@ public:
 
     void Draw();
     void MarkPosition(int x, int y, int moveCount);
-    void ResetPosition(int x, int y);
-   
+    void ResetPosition(int x, int y, bool markBacktracked = false);
+    void ClearBoard();
+private:
+    const int BACKTRACKED = -2;
+
 };
 
 

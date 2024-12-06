@@ -3,6 +3,7 @@
 #include "Board.h"
 #include <stack>
 #include <limits>
+#include <cmath>
 
 class Knight {
 public:
@@ -13,9 +14,9 @@ public:
 
     Knight(int startX, int startY);
 
-    void move(int newX, int newY);
-    bool knightTourStep(Board& board, std::stack<std::pair<int, int>>& moveStack);
-    void backtrack(Board& board, std::stack<std::pair<int, int>>& moveStack);
+    void Move(int newX, int newY);
+    bool KnightTourStep(Board& board, std::stack<std::pair<int, int>>& moveStack);
     int WarnsdorffCount(int x, int y, Board& board);
+    double EuclideanDistance(int x1, int y1, int x2, int y2);
 };
 

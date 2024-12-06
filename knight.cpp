@@ -5,9 +5,11 @@
 Knight::Knight(int startX, int startY)
     : x(startX),
     y(startY),
-    moveCount(0) {}
+    moveCount(1)
+{
+}
 
-void Knight::move(int newX, int newY) {
+void Knight::Move(int newX, int newY) {
     x = newX;
     y = newY;
     moveCount++;
@@ -24,17 +26,35 @@ int Knight::WarnsdorffCount(int x, int y, Board& board) {
     return count;
 }
 
-bool Knight::knightTourStep(Board& board, std::stack<std::pair<int, int>>& moveStack) {
+double Knight::EuclideanDistance(int x1, int y1, int x2, int y2)
+{
+    return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+}
+
+bool Knight::KnightTourStep(Board& board, std::stack<std::pair<int, int>>& moveStack) {
     int minOnwardMoves = std::numeric_limits<int>::max();
+    double maxDistance = -1.0;
     int bestMove = -1;
     int nx = -1, ny = -1;
 
+    int centerX = (board.m_BoardSize - 1) / 2;
+    int centerY = (board.m_BoardSize - 1) / 2;
+
+    // Try all possible moves
     for (int i = 0; i < 8; i++) {
         int tx = x + dx[i], ty = y + dy[i];
-        if (tx >= 0 && tx < board.m_BoardSize && ty >= 0 && ty < board.m_BoardSize && board.m_Board[tx][ty] == -1) {
+        if (tx >= 0 && tx < board.m_BoardSize &&
+            ty >= 0 && ty < board.m_BoardSize &&
+            board.m_Board[tx][ty] == -1) {  // Only consider unvisited positions
+
+
             int onwardMoves = WarnsdorffCount(tx, ty, board);
-            if (onwardMoves < minOnwardMoves) {
+            double distance = EuclideanDistance(tx, ty, centerX, centerY);
+
+            if (onwardMoves < minOnwardMoves ||
+                (onwardMoves == minOnwardMoves && distance > maxDistance)) {
                 minOnwardMoves = onwardMoves;
+                maxDistance = distance;
                 nx = tx;
                 ny = ty;
                 bestMove = i;
@@ -43,45 +63,26 @@ bool Knight::knightTourStep(Board& board, std::stack<std::pair<int, int>>& moveS
     }
 
     if (bestMove != -1) {
-        move(nx, ny);
+        // Make the best move
+        Move(nx, ny);
         board.MarkPosition(nx, ny, moveCount);
-        moveStack.push({ nx,ny });
+        moveStack.push({ nx, ny });
         return true;
     }
 
+   
     return false;
 }
 
-void Knight::backtrack(Board& board, std::stack<std::pair<int, int>>& moveStack) {
-    if (moveStack.empty()) {
-        std::cout << "Backtrack stack is empty." << std::endl;
-        return;
-    }
 
-  
-    auto lastMove = moveStack.top();
-    moveStack.pop();
 
-   
-    board.ResetPosition(x, y);
 
-    board.MarkPosition(x, y, moveCount);
-   
-    x = lastMove.first;
-    y = lastMove.second;
 
-    moveCount--;
 
-    board.MarkPosition(x, y, moveCount);
-   
 
-    std::cout << "Backtracking to: (" << x << ", " << y << "), moveCount: " << moveCount << std::endl;
 
-   
-    if (!knightTourStep(board, moveStack)) {
-        std::cout << "No further moves possible after backtracking." << std::endl;
-    }
-}
+
+
 
 
 
